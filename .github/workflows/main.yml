@@ -8,13 +8,15 @@ on:
 jobs:
 
     build:
+        name: Project Build (Packaging)
         runs-on: ubuntu-latest
         steps:
+
             # Checks-out the repo under $GITHUB_WORKSPACE
             - name: Checking Out Code Repo
               uses: actions/checkout@v3
 
-            # Download Veracode CLI and package the project
+            # Download Veracode CLI and build (package) the project
             - name: Downloading Veracode CLI (Latest Version)
               env:
                 VID: ${{ SECRETS.VID }}
@@ -27,5 +29,39 @@ jobs:
                 echo ''
                 echo '[INFO] --- Packaging project with Veracode Autopackage...'
                 ./veracode package -s . -o ./verascan --trust
-                ls ./verascan                 
+                ls ./verascan  
+                
+            # Publishes artifact to be scanned
+            - uses: actions/upload-artifact@v4
+              with:
+                name: veracode-auto-pack-verademo-javascript-api_GH-Actions-js.zip
+                path: ./verascan/veracode-auto-pack-verademo-javascript-api_GH-Actions-js.zip
 
+    SAST_pipeline_scan:
+        name: Veracode SAST (Pipeline Scan)
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+
+            # Checks-out the repo under $GITHUB_WORKSPACE
+            - name: Checking Out Code Repo
+              uses: actions/checkout@v3
+
+            # Gets published artifact to be scanned
+            - name: Getting artifact
+              uses: actions/download-artifact@v4
+              with:
+                name: veracode-auto-pack-verademo-javascript-api_GH-Actions-js.zip
+
+            # Executes Veracode Pipeline Scan (SAST)
+            - name: Veracode Pipeline Scan
+              id: pipeline-scan
+              uses: veracode/veracode-pipeline-scan-action@v1.0.21
+              with:
+                vid: ${{ SECRETS.VID }}
+                vkey: ${{ SECRETS.VID }}
+                file: "veracode-auto-pack-verademo-javascript-api_GH-Actions-js.zip" 
+                veracode_policy_name: "Veracode_Recommended_Very High_+_SCA_-_MPT"
+                esd: true
+                debug: 1
+                fail_build: true
