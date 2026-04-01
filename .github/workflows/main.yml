@@ -1,0 +1,31 @@
+name: Veracode Fix (Batch)
+
+on:
+    push:
+        branches:
+            - 'feature'
+
+jobs:
+
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            # Checks-out the repo under $GITHUB_WORKSPACE
+            - name: Checking Out Code Repo
+              uses: actions/checkout@v3
+
+            # Download Veracode CLI and package the project
+            - name: Downloading Veracode CLI (Latest Version)
+              env:
+                VID: ${{ SECRETS.VID }}
+                VKEY: ${{ SECRETS.VKEY }}
+              run: |
+                echo '[INFO] --- Downloading Veracode CLI (Latest Version)...'
+                curl -fsS https://tools.veracode.com/veracode-cli/install | sh
+                export VERACODE_API_KEY_ID=$VID
+                export VERACODE_API_KEY_SECRET=$VKEY
+                echo ''
+                echo '[INFO] --- Packaging project with Veracode Autopackage...'
+                ./veracode package -s . -o ./verascan --trust
+                ls ./verascan                 
+
