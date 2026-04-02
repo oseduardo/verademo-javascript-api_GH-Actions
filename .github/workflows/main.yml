@@ -63,5 +63,5 @@ jobs:
                 file: "veracode-auto-pack-verademo-javascript-api_GH-Actions-js.zip" 
                 veracode_policy_name: "Veracode_Recommended_Very High_+_SCA_-_MPT"
                 esd: true
-                debug: 1
+                debug: 0
                 fail_build: true
