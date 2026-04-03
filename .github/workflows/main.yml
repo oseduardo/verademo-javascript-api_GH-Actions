@@ -53,7 +53,7 @@ jobs:
               with:
                 name: veracode-auto-pack-verademo-javascript-api_GH-Actions-js.zip
 
-            # Executes Veracode Pipeline Scan (SAST)
+            # Executes Veracode Pipeline Scan (SAST) 
             - name: Veracode Pipeline Scan
               id: pipeline-scan
               uses: veracode/veracode-pipeline-scan-action@v1.0.21
