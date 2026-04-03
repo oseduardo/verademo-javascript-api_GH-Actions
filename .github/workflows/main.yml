@@ -59,7 +59,7 @@ jobs:
               uses: veracode/veracode-pipeline-scan-action@v1.0.21
               with:
                 vid: ${{ SECRETS.VID }}
-                vkey: ${{ SECRETS.VID }}
+                vkey: ${{ SECRETS.VKEY }}
                 file: "veracode-auto-pack-verademo-javascript-api_GH-Actions-js.zip" 
                 #veracode_policy_name: "Veracode_Recommended_Very High_+_SCA_-_MPT"
                 esd: true
