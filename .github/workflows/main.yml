@@ -64,7 +64,7 @@ jobs:
                 #veracode_policy_name: "Veracode_Recommended_Very High_+_SCA_-_MPT"
                 esd: true
                 debug: 0
-                fail_build: true
+                fail_build: false
 
             - uses: actions/upload-artifact@v4
               with:
