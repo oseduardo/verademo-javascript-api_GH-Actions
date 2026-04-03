@@ -63,5 +63,41 @@ jobs:
                 file: "veracode-auto-pack-verademo-javascript-api_GH-Actions-js.zip" 
                 #veracode_policy_name: "Veracode_Recommended_Very High_+_SCA_-_MPT"
                 esd: true
-                debug: 1
+                debug: 0
                 fail_build: true
+
+            - uses: actions/upload-artifact@v4
+              with:
+                name: Veracode Pipeline-Scan Results
+                path: results.json 
+
+    veracode-fix:
+        name: Veracode Fix
+        needs: SAST_pipeline_scan
+        runs-on: ubuntu-latest
+        steps:
+
+            # Checks-out the repo under $GITHUB_WORKSPACE
+            - name: checkout repo
+              uses: actions/checkout@v3
+
+            # Gets published results.json file from pipeline scan
+            - name: get flaw file
+              uses: actions/download-artifact@v4
+              with:
+                name: Veracode Pipeline-Scan Results
+          
+            # Creates fixes from static findings
+            - name: Create fixes from static findings
+              id: convert
+              uses: Veracode/veracode-fix@main
+              with:
+                inputFile: filtered_results.json
+                vid: ${{ SECRETS.VID }}
+                vkey: ${{ SECRETS.VKEY }}
+                source_base_path_1: "com/:src/main/java/com/"
+                source_base_path_2: "WEB-INF:src/main/webapp/WEB-INF"
+                language: javascript
+                prComment: true
+                fixType: batch
+                createPR: true
