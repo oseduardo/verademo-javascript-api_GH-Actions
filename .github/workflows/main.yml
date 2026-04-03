@@ -92,7 +92,7 @@ jobs:
               id: convert
               uses: Veracode/veracode-fix@main
               with:
-                inputFile: filtered_results.json
+                inputFile: results.json
                 vid: ${{ SECRETS.VID }}
                 vkey: ${{ SECRETS.VKEY }}
                 source_base_path_1: "com/:src/main/java/com/"
